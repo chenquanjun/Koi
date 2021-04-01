@@ -25,3 +25,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm i
     - run: npm run build-linux-64
+    - run: npm run build-win-64
+    - run: npm run build-win-32
+    - run: npm run build-mac-64
