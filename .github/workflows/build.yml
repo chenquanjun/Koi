@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build_win:
+  build_macos:
 
     runs-on: macos-latest
 
@@ -25,3 +25,42 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm i
     - run: npm run build-mac-64
+
+  build_win:
+
+    runs-on: windows-2016
+    needs: build_macos
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm i
+    - run: npm run build-win-64
+    - run: npm run build-win-32
+
+  build_linux:
+
+    runs-on: ubuntu-latest
+    needs: build_win
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm i
+    - run: npm run build-linux-64
